@@ -212,8 +212,8 @@ void sortAccounts(BankAccount ** list)
 			}
 			int accId1 = (*(list + i))->getAccountId();
 			int accId2 = (*(list + j))->getAccountId();
-			accId1 == 0 ? accId1 = 99999;
-			accId2 == 0 ? accId1 = 99999;
+			accId1 == 0 ? accId1 = 999999;
+			accId2 == 0 ? accId1 = 999999;
 			if (accId1 > accid2)
 			{
 				BankAccount *temp = *(list + i);
