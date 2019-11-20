@@ -225,7 +225,7 @@ void sortAccounts(BankAccount ** list)
 //******************************************************************
 BankAccount ** readAccounts()
 {
-    ifstream inputFile("clients.txt");	// Opening the input file
+    ifstream inputFile("CLIENTS.TXT");	// Opening the input file
     if (!inputFile)            		// If the file is not found...
     {
         cout << "File not found !!!" << endl;
