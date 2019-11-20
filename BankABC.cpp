@@ -251,19 +251,15 @@ BankAccount ** readAccounts()
     while (inputFile && (counter < K_SizeMax - 1)){
         // YOU HAVE TO DO SOMETHING FROM HERE !!!
 	
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	if (TypeRead == 03 ) {
+          *pAccount = new DepositAccount(accountRead, TypeRead, nameRead, dateRead,balanceRead, nbyearRead);    
+        } else if (TypeRead == 04 ) {
+          balanceRead = balanceRead + ((balanceRead * nbyearRead * RateRead) / 36000);
+          *pAccount = new LoanAccount(accountRead, TypeRead, nameRead, dateRead, balanceRead, nbyearRead, RateRead);
+        }else {
+          *pAccount = new BankAccount(accountRead, TypeRead, nameRead, dateRead, balanceRead);
+            
+        }
 
         // UNTIL THIS POINT.
 
@@ -408,7 +404,10 @@ void displayAccounts(BankAccount ** listAccounts)
 	
     int i = 0;
 	
-
+    // modify this.. added to check if correct information was added.. you may remove :)
+    for(i = 0; i< K_SizeMax; i ++){
+      cout << listAccounts[i] -> getAccountId() << endl;
+    }
 	
 	
 	
