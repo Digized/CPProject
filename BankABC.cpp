@@ -20,10 +20,22 @@
 #include <cstring>
 #include <stdlib.h>
 #include <iomanip>
+#include <sstream>
+#include <map>
+#include <vector>
 
 #include "BankABC.h"
 
 using namespace std;
+namespace patch
+{
+    template < typename T > std::string to_string( const T& n )
+    {
+        std::ostringstream stm ;
+        stm << n ;
+        return stm.str() ;
+    }
+}
 
 double DepositAccount::rate = 6.50;
 double totalAccounts = 0.0;
@@ -401,20 +413,65 @@ void displayAccounts(BankAccount ** listAccounts)
 
     cout << "                       THE REPORT OF THE BANK ACCOUNTS OF CLIENTS" << endl;
     cout << "                       ------------------------------------------" << endl << endl;
-	
     int i = 0;
 	
+
     // modify this.. added to check if correct information was added.. you may remove :)
-    for(i = 0; i< K_SizeMax; i ++){
-      cout << listAccounts[i] -> getAccountId() << endl;
+    map<int, vector<string> > result_string_map;
+    map<int, vector<double> > total_balance_map;
+    for(i = 0; i< K_SizeMax; i++){
+      if(listAccounts[i] != 0 && listAccounts[i] -> getAccountId() != 0){
+        int nbYears;
+        double rate;
+        if(listAccounts[i] -> isDepositAccount()){
+          DepositAccount downcastDepositAcc;
+          DepositAccount* depositAcc = dynamic_cast<DepositAccount*>(listAccounts[i]);
+          nbYears = depositAcc -> getNbYears();
+          rate = depositAcc -> getRate();
+        } else if(listAccounts[i] -> isLoanAccount()){
+          LoanAccount downcastLoanAcc;
+          LoanAccount* loanAcc = dynamic_cast<LoanAccount*>(listAccounts[i]);
+          nbYears = loanAcc -> getNbYears();
+          rate = loanAcc -> getRate();
+        } else{
+          nbYears = NULL;
+          rate = NULL;
+        }
+        string s = "                                                                      ";
+        s.insert(0, patch::to_string(listAccounts[i] -> getAccountId()));
+        s.insert(15, patch::to_string(listAccounts[i] -> getType()));
+        s.insert(23, patch::to_string(listAccounts[i] -> getUpdatedate()));
+        s.insert(37, patch::to_string(listAccounts[i] -> getBalance()));
+        if(nbYears) { s.insert(49, patch::to_string(nbYears)); };
+        if(rate) { s.insert(61, patch::to_string(rate)); };
+
+        vector<double> total_balance_vec = total_balance_map[listAccounts[i] -> getAccountId()];
+        total_balance_vec.push_back(listAccounts[i] -> getBalance());
+        total_balance_map[listAccounts[i] -> getAccountId()] = total_balance_vec;
+
+        vector<string> result_string_vec = result_string_map[listAccounts[i] -> getAccountId()];
+        if(result_string_vec.empty()){ result_string_vec.push_back(listAccounts[i] -> getClientName()); };
+        result_string_vec.push_back(s);
+        result_string_map[listAccounts[i] -> getAccountId()] = result_string_vec;
+      };
     }
-	
-	
-	
-	
-	
-	
-	
+
+    for (auto& t : result_string_map){
+      cout << "     Client Name: " << t.second[0] << endl << endl;;
+      cout << "Bank Account   Type    Update Date   Balance     Nb. Years   Rate" << endl;
+      cout << "------------   ----    -----------   --------    ---------   ----" << endl ;
+      for (int i = 1; i < t.second.size(); i++){
+        cout << t.second[i] << "\n";
+      }
+      double total_balance = 0;
+      for (int i = 0; i < total_balance_map[t.first].size(); i++){
+        total_balance = total_balance + total_balance_map[t.first][i];
+      }
+      cout << "                                     --------" << endl;
+      cout << "                     TOTAL ACCOUNTS: " << total_balance << endl;
+      cout << endl << endl;
+    }
+
 	
 }
 
