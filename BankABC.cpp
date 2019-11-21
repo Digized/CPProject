@@ -372,18 +372,44 @@ void LoanAccount::executeTransaction(const Transaction trans)
 // Output: Nothing.
 //*************************************************************************
 void updateAccounts(BankAccount ** listAccounts) {
-     ifstream inputFile("transact.txt");	// Opening the input file
+    ifstream inputFile("transact.txt");	// Opening the input file
 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
+    if (!inputFile)            		// If the file is not found...
+    {
+        cout << "File not found !!!" << endl;
+        exit(0);
+    }
+
+    long accountID, dateOfTransaction;
+    int accountType,transactionCode;
+    int counter = 0;
+    char name[60];
+    double amount;
+
+    inputFile >> accountID>> accountType >> dateOfTransaction >> transactionCode >> amount;
+    inputFile.getline(name, 60 );
+
+    while(inputFile && (counter<K_SizeMax-1)){
+
+        //Transaction(long idTr, int typeTr, long dateTr,                            int codeTr = 01, double amountTr)
+
+        Transaction * nextTransaction = new Transaction(accountID, accountType, dateOfTransaction, transactionCode, amount);
+        BankAccount *currentAccount;
+
+        int listSize = sizeof(listAccounts);
+
+        for (int i = 0; i< listSize; ++i){
+            if(listAccounts[i]->getAccountId() == accountID){
+                currentAccount = listAccounts[i];
+            }
+        }
+        currentAccount->executeTransaction(*nextTransaction);
+        currentAccount->setUpdateDate(dateOfTransaction);
+
+        inputFile >> accountID >> accountType >> dateOfTransaction >> transactionCode >> amount;
+        nextTransaction++;
+        counter++;
+    }
 }
 
 //******************************************************************************
