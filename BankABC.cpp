@@ -372,7 +372,7 @@ void LoanAccount::executeTransaction(const Transaction trans)
 // Output: Nothing.
 //*************************************************************************
 void updateAccounts(BankAccount ** listAccounts) {
-    ifstream inputFile("transact.txt");	// Opening the input file
+    ifstream inputFile("TRANSACT.TXT");	// Opening the input file
 
     if (!inputFile)            		// If the file is not found...
     {
