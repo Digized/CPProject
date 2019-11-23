@@ -216,15 +216,24 @@ inline void Transaction::setAmount(double amountTr)
 //****************************************************************************
 void sortAccounts(BankAccount ** list)
 {
-
-
-
-
-
-
-
-
-
+	int i = 0;
+	for (i = 0; i <= K_SizeMax - 1; i++) {
+		for (int j = i + 1; j <= K_SizeMax; j++) {
+			if (*(list + j) == NULL) {
+				break;
+			}
+			int accId1 = (*(list + i))->getAccountId();
+			int accId2 = (*(list + j))->getAccountId();
+			accId1 == 0 ? accId1 = 999999;
+			accId2 == 0 ? accId1 = 999999;
+			if (accId1 > accid2)
+			{
+				BankAccount *temp = *(list + i);
+				*(list + i) = *(list + j);
+				*(list + j) = temp;
+			}
+		}
+	}
 }
 
 //******************************************************************
